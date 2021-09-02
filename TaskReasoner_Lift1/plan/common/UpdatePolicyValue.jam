@@ -1,0 +1,37 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN PERFORM UpdatePolicyValue ($policyName, $serviceName, $value) {
+ID : "UpdatePolicyValue"
+PRECONDITION : 
+	FACT TaskReasoner($taskReasoner);
+	FACT LoggerManager($lm);
+	FACT PolicyHandler($handler);
+BODY : 
+	$arg = $handler.generatePolicyUpdateArgument($policyName, $value);
+	$lm.action("policyUpdate", $arg);
+	RETRACT PolicyValue($policyName, $serviceName, $oldPolicyValue);
+	ASSERT PolicyValue($policyName, $serviceName, $value);
+	
+	System.out.println("policy updated : " + $policyName +", " +$value);
+	$taskReasoner.sendToTM("policy", $policyName, $serviceName, $value);
+	
+	//ASSERT AssertedContext($policyName);
+UTILITY : 1;
+}
+
+
+/*
+	RETRIEVE CurrentService($currentServiceName, $currentServiceID);
+	if ($serviceName == "BuiltIn") {
+		$taskReasoner.sendToTM("policy", $policyName, $serviceName, $value);
+		System.out.println("policy updated and sent to tm");
+	} else if ($currentServiceName == $serivceName) {
+		$taskReasoner.sendToTM("policy", $policyName, $serviceName, $value);
+		System.out.println("policy updated and sent to tm");
+	} else {
+		System.out.println("policy updated : " + $policyName +", " +$value);
+		$taskReasoner.sendToTM("policy", $policyName, $serviceName, $value);
+	}
+*/	

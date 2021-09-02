@@ -1,0 +1,10 @@
+<Service>
+	<ServiceAttribute>
+		<Name>Reservation</Name>
+		<PreCondition>(customerRequest $customer "Reservation" $where)</PreCondition>
+		<PostCondition>(reservationState $where $time)</PostCondition>
+		<PostGoal></PostGoal>
+	</ServiceAttribute>
+	
+	<Role
+</Service>

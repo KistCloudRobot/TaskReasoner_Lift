@@ -1,0 +1,24 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN PERFORM UpdateCurrentService ($serviceName, $serviceID, $goalName) {
+ID : "UpdateCurrentService_serviceStart"
+PRECONDITION : 
+BODY : 
+	ASSERT CurrentService($serviceName, $serviceID, $goalName);
+UTILITY : 1;
+}
+
+
+PLAN PERFORM UpdateCurrentService ($serviceName, $serviceID, $goalName) {
+ID : "UpdateCurrentService"
+PRECONDITION : 
+	FACT CurrentService($oldServiceName, $oldServiceID, $oldGoalName);
+	FACT LoggerManager($lm);
+BODY : 
+	
+	RETRACT CurrentService($oldServiceName, $oldServiceID, $oldGoalName);
+	ASSERT CurrentService($serviceName, $serviceID, $goalName);
+UTILITY : 10;
+}

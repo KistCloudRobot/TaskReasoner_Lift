@@ -1,0 +1,87 @@
+<Service>
+	<ServiceAttribute>
+		<Name>guideInCompany</Name>
+		<SubClassOf>guide</SubClassOf>
+	</ServiceAttribute>
+	
+	<ServiceOntology>
+		<Ontology>
+			<Name>guideInCompanyPlan</Name>
+			<Attribute>Plan</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>guideInCompanyKnowledge</Name>
+			<Attribute>Knowledge</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>guideInCompanyContext</Name>
+			<Attribute>Context</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+	</ServiceOntology>
+	
+	<Roles>
+		<Role>
+			<RoleName>guide</RoleName>
+			<RoleDescription>guide customer</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkDestinationByTask</RoleActivity>
+				<RoleActivity>checkDestinationByPerson</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>responseDestination</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>buildingMap</RolePermission>
+				<RolePermission>organizationChart</RolePermission>
+				<RolePermission>scheduleInfo</RolePermission>
+			</RolePermissions>
+		</Role>
+	</Roles>
+	
+	<Activities>
+		<Activity>
+			<Name>checkDestinationByTask</Name>
+			<PreCondition>(customerRequest $customer "DestinationNotificationByTask" $task)</PreCondition>
+			<PostGoal>(checkScheduleByTask $task)</PostGoal>
+			<Effect>(responseRequest (destination $busy $location $person $phone))</Effect>
+		</Activity>
+		<Activity>
+			<Name>checkDestinationByPerson</Name>
+			<PreCondition>(customerRequest $customer "DestinationNotificationByPerson" $person)</PreCondition>
+			<PostGoal>(checkScheduleByPerson $person)</PostGoal>
+			<Effect>(responseRequest (destination $busy $location $person $phone))</Effect>
+		</Activity>
+	</Activities>
+	
+	<Protocols>
+		<Protocol>
+			<Name>responseDestination</Name>
+			<From>guide</From>
+			<To>customer</To>
+			<PreCondition>(responseRequest (destination $busy $location $person $phone))</PreCondition>
+			<PostGoal>(responseDestination $from $to $busy $location $person $phone)</PostGoal>
+			<Effect>(achieved (responseDestination))</Effect>
+		</Protocol>
+	</Protocols>
+	
+	<Agents>
+		<Agent>
+			<Name>guideAgent</Name>
+			<AgentURI>www.arbi.com/guideAgent</AgentURI>
+			<AgentRoles>
+				<AgentRole>guide</AgentRole>
+			</AgentRoles>
+		</Agent>
+		<Agent>
+			<Name>customerAgent</Name>
+			<AgentURI>www.arbi.com/CustomerAgent</AgentURI>
+			<AgentRoles>
+				<AgentRole>customer</AgentRole>
+			</AgentRoles>
+		</Agent>
+	</Agents>
+
+</Service>

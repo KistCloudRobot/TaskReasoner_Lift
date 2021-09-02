@@ -1,0 +1,15 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN PERFORM EvaluatePolicyValue($name) {
+	ID : "handleResource"
+	PRECONDITION :
+		FACT TaskReasoner($taskReasoner);
+		FACT BatteryRate($max, $min, $current);
+		$name == "Resource";
+	BODY :
+//		$value = $current/($max-$min);
+		PERFORM UpdatePolicyValue("Resource", "BuiltIn", $value);
+	UTILITY : 1;
+}

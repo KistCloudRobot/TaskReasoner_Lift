@@ -1,0 +1,38 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN CONCLUDE HandlePolicy($contextName) {
+	ID : "HandlePolicy"
+	PRECONDITION : 
+		FACT PolicyHandler($policyHandler);
+	BODY :
+		System.out.println("find related policy");
+		
+		$policyName = $policyHandler.getRelatedPolicy($contextName);
+		
+		System.out.println("start Evaluate Policy :" + $policyName);
+		
+		PERFORM EvaluatePolicyValue($policyName);
+	UTILITY : 9999;
+	EFFECTS : RETRACT HandlePolicy($contextName);
+}
+
+PLAN PERFORM EvaluatePolicyValue($policyName) {
+	ID : "InitializePolicyValue"
+	PRECONDITION :
+		$policyName != "UNDEFINED";
+	BODY : 
+		System.out.println("initialize policy value : " + $policyName);
+		PERFORM UpdatePolicyValue($policyName, $serviceName, 0);
+	UTILITY : -1;
+}
+
+
+PLAN PERFORM EvaluatePolicyValue($policyName) {
+	ID : "evaluateNothing"
+	BODY : 
+		System.out.println("condition is not satisfied or there is not related policy : " + $policyName);
+	UTILITY : -2;
+}
+

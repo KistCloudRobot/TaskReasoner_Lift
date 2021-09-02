@@ -1,0 +1,242 @@
+<Service>
+
+	<Roles>
+		<Role>
+			<RoleName>receptionManager</RoleName>
+			<RoleDescription>Reception Customer</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkObjectLocation</RoleActivity>
+				<RoleActivity>generateSchedule</RoleActivity>
+				<RoleActivity>reserveObjectDeliver</RoleActivity>
+				<RoleActivity>requestObjectDeliver</RoleActivity>
+				<RoleActivity>requestObjectRecept</RoleActivity>
+				<RoleActivity>checkPossibleReservation</RoleActivity>
+				<RoleActivity>resevation</RoleActivity>
+				<RoleActivity>reservationModify</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>informLocationPath</RoleProtocol>
+				<RoleProtocol>informObjectLocation</RoleProtocol>
+				<RoleProtocol>informPersonLocation</RoleProtocol>
+				<RoleProtocol>informPersonSchedule</RoleProtocol>
+				<RoleProtocol>informMeetingAttendee</RoleProtocol>
+				<RoleProtocol>informEventDataByPerson</RoleProtocol>
+				<RoleProtocol>informEventDataByDepartment</RoleProtocol>
+				<RoleProtocol>requestGuide</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>buildingMap</RolePermission>
+				<RolePermission>organizationChart</RolePermission>
+				<RolePermission>scheduleInfo</RolePermission>
+			</RolePermissions>
+			<RoleResponsibility>
+				<Conclude></Conclude>
+				<Maintain>(customerEmotion "find")</Maintain>
+			</RoleResponsibility>
+		</Role>
+
+		<Role>
+			<RoleName>guide</RoleName>
+			<RoleDescription>Guide Customer</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>guideCustomer</RoleActivity>
+				<RoleActivity>checkFollowCustomer</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>requestFollow</RoleProtocol>
+				<RoleProtocol>completeGuide</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>buildingMap</RolePermission>
+			</RolePermissions>
+			<RoleResponsibility>
+				<Conclude>(customeLocation $location)</Conclude>
+				<Maintain>(near $customer)</Maintain>
+			</RoleResponsibility>
+		</Role>
+
+		<Role>
+			<RoleName>customer</RoleName>
+			<RoleDescription>Visit Company</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>followGuide</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>informRequest</RoleProtocol>
+				<RoleProtocol>queryPersonState</RoleProtocol>
+				<RoleProtocol>queryLocationPath</RoleProtocol>
+				<RoleProtocol>queryWaitLocation</RoleProtocol>
+				<RoleProtocol>requestGuide</RoleProtocol>
+				<RoleProtocol>queryObjectLocation</RoleProtocol>
+			</RoleProtocols>
+		</Role>
+	</Roles>
+
+	<Activities>
+
+		<Activity>
+			<Name>checkObjectLocation</Name>
+			<Pre-Condition>(customerRequest $person "QueryObjectLocation" $a $b $c $d)</Pre-Condition>
+			<PostGoal>(postGoal (ObjectLocationChecked $a $b $c $d))</PostGoal>
+			<Effect>(objectLocation $object $location)</Effect>
+		</Activity>
+
+		<Activity>
+			<Name>guideCustomer</Name>
+			<Pre-Condition>(customerRequest $customer "GuideCustomer" $location)</Pre-Condition>
+			<PostGoal>(guideCustomer $customer $location)</PostGoal>
+			<Effect>(guideLocation $x $y $z)</Effect>
+		</Activity>
+
+		<Activity>
+			<Name>checkFollowCustomer</Name>
+			<Pre-Condition>(customerRequest $customer "GuestGuidence" $location)</Pre-Condition>
+			<PostGoal>(checkFollowGuide $customer)</PostGoal>
+			<Effect>(achieved (checkFollowGuide))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>generateSchedule</Name>
+			<Pre-Condition>(customerRequest $person "RequestScheduleGeneration" $base $added)</Pre-Condition>
+			<PostGoal>(postGoal (GenerateScheduleAfter $base $added))</PostGoal>
+			<Effect>(achieved (generateSchedule))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>reserveObjectDeliver</Name>
+			<Pre-Condition>(customerRequest $person "ReserveObjectDeliver" $a $b $c)</Pre-Condition>
+			<PostGoal>(postGoal (ObjectDeliverReserved $a $b $c))</PostGoal>
+			<Effect>(achieved (generateSchedule))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>requestObjectDeliver</Name>
+			<Pre-Condition>(customerRequest $person "RequestObjectDeliver" $name)</Pre-Condition>
+			<PostGoal>(postGoal (ObjectDeliverReserved $name))</PostGoal>
+			<Effect>(achieved (generateSchedule))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>requestObjectRecept</Name>
+			<Pre-Condition>(customerRequest $person "RequestObjectRecept" $a $b)</Pre-Condition>
+			<PostGoal>(postGoal (ObjectRecepted $a $b))</PostGoal>
+			<Effect>(achieved (generateSchedule))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>checkPossibleReservation</Name>
+			<Pre-Condition>(customerRequest $person "RequestPossibleReservation" $date $location)</Pre-Condition>
+			<PostGoal>(postGoal  (RoomReservationTimeRequested $date $location))</PostGoal>
+			<Effect>(achieved (checkPossibleReservation))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>reservation</Name>
+			<Pre-Condition>(customerRequest $person "RequestReservation" $date $location)</Pre-Condition>
+			<PostGoal>(postGoal  (RoomReserved $date $location))</PostGoal>
+			<Effect>(achieved (reservation))</Effect>
+		</Activity>
+		
+		<Activity>
+			<Name>reservationModify</Name>
+			<Pre-Condition>(customerRequest $person "RequestReservationModification" $name)</Pre-Condition>
+			<PostGoal>(postGoal  (ReservationModified $name))</PostGoal>
+			<Effect>(achieved (reservation))</Effect>
+		</Activity>
+
+	</Activities>
+
+	<Protocols>
+	
+		<Protocol>
+			<Name>informLocationPath</Name>
+			<Pre-Condition>(customerRequest $person "RequestLocationPath" $location)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (NotifyRoute $location))
+			</PostGoal>
+			<Effect>(achieved (informLocationPath))</Effect>
+		</Protocol>
+
+		<Protocol>
+			<Name>informObjectLocation</Name>
+			<Pre-Condition>(customerRequest $person "RequestDesiredObject" $object)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (NotifyRouteDesiredObject $object))
+			</PostGoal>
+			<Effect>(achieved (informObjectLocation))</Effect>
+		</Protocol>
+		
+		<Protocol>
+			<Name>informPersonLocation</Name>
+			<Pre-Condition>(customerRequest $person "PersonLocationRequested" $whom)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (AquirePersonLocation $whom))
+			</PostGoal>
+			<Effect>(achieved (informPersonLocation))</Effect>
+		</Protocol>
+		
+		<Protocol>
+			<Name>informMeetingAttendee</Name>
+			<Pre-Condition>(customerRequest $person "RequestMeetingAttendee" $meeting)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (AquireAttendeeList $meeting))
+			</PostGoal>
+			<Effect>(achieved (informMeetingAttendee))</Effect>
+		</Protocol>
+		
+		<Protocol>
+			<Name>informEventDataByPerson</Name>
+			<Pre-Condition>(customerRequest $person "QueryEventDataByPerson" $name)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (NotifyConferenceRoomByPerson $name))
+			</PostGoal>
+			<Effect>(achieved (informEventDataByPerson))</Effect>
+		</Protocol>
+		
+		<Protocol>
+			<Name>informEventDataByDepartment</Name>
+			<Pre-Condition>(customerRequest $person "QueryEventDataByDepartment" $name)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (NotifyConferenceRoomByGroup $name))
+			</PostGoal>
+			<Effect>(achieved (informEventDataByDepartment))</Effect>
+		</Protocol>
+		
+		<Protocol>
+			<Name>requestGuide</Name>
+			<Pre-Condition>(customerRequest $person "RequestGuide" $name $location)</Pre-Condition>
+			<From>receptionManager</From>
+			<To>customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(postGoal (GuideCustomer $name $location))
+			</PostGoal>
+			<Effect>(achieved (requestGuide))</Effect>
+		</Protocol>
+
+	</Protocols>
+
+	<Agents>
+		<Agent>
+			<Name>receptionAgent</Name>
+			<AgentURI>www.arbi.com/receptionAgent</AgentURI>
+			<AgentRoles>
+				<AgentRole>receptionManager</AgentRole>
+				<AgentRole>guide</AgentRole>
+			</AgentRoles>
+		</Agent>
+	</Agents>
+
+
+</Service>

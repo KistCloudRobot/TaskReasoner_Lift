@@ -1,0 +1,21 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN CONCLUDE RecievedMessage($sender, $message){
+	ID : "ReciedvedMessage"
+	PRECONDITION: 
+		FACT GLMessageManager($glMsg);
+	BODY:
+		System.out.println("JAM received message : " + $sender + " " + $message);
+
+		$type = $glMsg.getGLName($message);
+			
+		PERFORM HandleMessage($type, $message);
+		
+		System.out.println("JAM handled message : " + $sender + " " + $message);
+		
+	EFFECTS:
+		RETRACT RecievedMessage($sender, $message);
+	UTILITY: 10000;
+}

@@ -1,0 +1,12 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN CONCLUDE GeneratedService($serviceName) {
+	ID : "GeneratedService"
+	BODY :
+		POST ACHIEVE ThrowWorkflowGoal($serviceName);
+	EFFECTS :
+		RETRACT GeneratedService($serviceName);
+	UTILITY : 9999;
+}

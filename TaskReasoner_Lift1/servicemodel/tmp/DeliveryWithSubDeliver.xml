@@ -1,0 +1,74 @@
+<Service>
+	<ServiceAttribute>
+		<Name>DeliveryWithSubDeliver</Name>
+		<SubClassOf>Delivery</SubClassOf>
+		<PreCondition>(userRequest $user "Delivery" $object $where $subDeliver)</PreCondition>
+		<PostCondition>(achieved (completeDelivery))</PostCondition>
+		<PostGoal>queryObjectLocation</PostGoal>
+	</ServiceAttribute>
+	
+	<Roles>
+		<Role>
+			<RoleName>deliver</RoleName>
+			<RoleDescription>deliver object somewhere</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkFollowSubDeliver</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>checkCompleteDelivery</RoleProtocol>
+			</RoleProtocols>
+			<RoleResponsebilities>
+				<Maintain>(near $subDeliver)</Maintain>
+			</RoleResponsebilities>
+		</Role>
+		<Role>
+			<RoleName>subDeliver</RoleName>
+			<SubClassOf>deliver</SubClassOf>
+			<RoleDescription>delivery with deliver</RoleDescription>
+			<RoleActivities>followDeliver</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocols>completeDelivery</RoleProtocols>
+			</RoleProtocols>
+			<RolePermissions></RolePermissions>
+			<RoleResponsebilities>
+				<Maintain>(follow $deliver)</Maintain>
+			</RoleResponsebilities>
+		</Role>
+	</Roles>
+	
+	<Activities>
+		<Activiy>
+			<Name>checkFollowSubDeliver</Name>
+			<PreCondition>(goalState (deliverObjectToWhere))</PreCondition>
+			<PostGoal>(checkFollowSubDeliver $subDeliver)</PostGoal>
+			<Effect>(near $subDeliver)</Effect>
+		</Activiy>
+		<Activity>
+			<Name>followDeliver</Name>
+			<PreCondition>(goalState (deliverObjectToWhere))</PreCondition>
+			<PostGoal>(followDeliver $deliver)</PostGoal>
+			<Effect>(follow $deliver)</Effect>
+		</Activity>
+	</Activities>
+	
+	<Protocols>
+		<Protocol>
+			<Name>checkCompleteDelivery</Name>
+			<From>deliver</From>
+			<To>subDeliver</To>
+			<Attribute>request</Attribute>
+			<PreCondition>(objectLocation $x $y $z)</PreCondition>
+			<PostGoal>(checkCompleteDelivery $from $to)</PostGoal>
+			<Effect>(achieved (checkCompleteDelivery))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>completeDelivery</Name>
+			<From>subDeliver</From>
+			<To>deliver</To>
+			<Attribute>response</Attribute>
+			<PreCondition>(achieved (checkCompleteDelivery))ᴧ(obejctLocation $x $y $z)</PreCondition>
+			<PostGoal>(completeDelivery $from $to)</PostGoal>
+			<Effect>(achieved (completeDelivery))</Effect>
+		</Protocol>
+	</Protocols>
+</Service>

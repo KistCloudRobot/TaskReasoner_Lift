@@ -1,0 +1,57 @@
+import kr.ac.uos.ai.robot.intelligent.TaskReasoner;
+
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+GOALS :
+	maintain alive():UTILITY -10000;
+	perform boot();
+
+//FACTS :
+
+OBSERVER: {
+	FACT TaskReasoner($taskReasoner);
+	$taskReasoner.dequeueMessage();
+}
+
+PLAN PERFORM boot() {
+	ID : "BOOTPLAN"
+	BODY :
+		System.out.println("booting process start");
+		
+		RETRIEVE TaskReasoner($taskReasoner);
+		$taskReasoner.loadPlan("plan/planList.jam");
+		
+		PERFORM loadPlanPackage();
+		System.out.println("boot success");
+		
+		PERFORM PostWorkflowGoals();
+
+}
+/*
+
+PLAN ACHIEVE ThrowWorkflowGoal($serviceName) {
+ID : "SchedulePrepareation"
+PRECONDITION : 
+$serviceName == "arbi:educationService";
+fact MeetingTimeApproached();
+fact userIntention($user, "meetingPreparation", $arg);
+fact MeetingInformation($meetingID, $meetingName, $roomID, $startTime, $importance);
+BODY :
+System.out.println("start workflow");
+PERFORM UpdateCurrentService("arbi:educationService","SchedulePrepareation");
+PERFORM ThrowGoal("RoomPrepared" , "arbi:educationService","SchedulePrepareation");
+PERFORM ThrowGoal("MeetingAnnounced" , "arbi:educationService","SchedulePrepareation");
+PERFORM FinalizeService("arbi:educationService", "SchedulePrepareation");
+
+		
+		ASSERT MeetingTimeApproached();
+		ASSERT userIntention("who", "meetingPreparation", "no?");
+		ASSERT MeetingInformation($meetingID, $meetingName, $roomID, $startTime, $importance);
+		
+		ACHIEVE ThrowWorkflowGoal("arbi:educationService");
+UTILITY : 1;
+}
+
+*/

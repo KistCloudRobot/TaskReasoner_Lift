@@ -1,0 +1,21 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN CONCLUDE ServiceFinished ($serviceName, $serviceID) {
+ID : "ServiceFinished"
+PRECONDITION : 
+	FACT LoggerManager($lm);
+	FACT CurrentService($currentSN, $currentID);
+	$currentSN == $serviceName;
+	$currentID == $serviceID;
+BODY : 
+	System.out.println("Service Finished...");
+	$lm.action("serviceFinish", $serviceName);
+	PERFORM FinalizeService($serviceName, $serviceID);
+	RETRACT CurrentService($serviceName, $serviceID, $goalName);
+	POST ACHIEVE ThrowWorkflowGoal($serviceName):UTILITY 2;
+EFFECTS :
+	RETRACT ServiceFinished($servieName, $serviceID);
+UTILITY : 5000;
+}

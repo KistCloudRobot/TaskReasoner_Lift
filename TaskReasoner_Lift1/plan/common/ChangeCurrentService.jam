@@ -1,0 +1,28 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN PERFORM ChangeCurrentService ($serviceName, $serviceID, $goalName) {
+ID : "AssertCurrentService"
+PRECONDITION : 
+BODY : 
+	ASSERT CurrentService($serviceName, $serviceID, $goalName);
+UTILITY : -1;
+}
+
+
+PLAN PERFORM ChangeCurrentService ($serviceName, $serviceID, $goalName) {
+ID : "ChangeCurrentService"
+PRECONDITION : 
+	FACT CurrentService($oldServiceName, $oldServiceID, $oldGoalName);
+	FACT LoggerManager($lm);
+BODY : 
+	
+	RETRACT CurrentService($oldServiceName, $oldServiceID, $oldGoalName);
+	
+	$arg = $lm.generateGoalUnpostArgument($oldServiceName, $oldGoalName);
+	$lm.action("goalUnpost", $arg);
+	
+	ASSERT CurrentService($serviceName, $serviceID, $goalName);
+UTILITY : 10;
+}

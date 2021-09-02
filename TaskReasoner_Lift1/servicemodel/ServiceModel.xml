@@ -1,0 +1,142 @@
+<Service>
+	<ServiceAttribute>
+		<Name>Guide</Name>
+		<Pre-Condition>(facePerceived $user $name)</Pre-Condition>
+		<Post-Condition>(achieved (completeGuide))</Post-Condition>
+		<PostGoal>queryRequest</PostGoal>
+	</ServiceAttribute>
+	
+	<Roles>
+		<Role>
+			<RoleName>guide</RoleName>
+			<RoleDescription>guide customer</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkScheduleByTask</RoleActivity>
+				<RoleActivity>checkScheduleByPerson</RoleActivity>
+				<RoleActivity>guideCustomer</RoleActivity>
+				<RoleActivity>checkFollowCustomer</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>guideProtocol</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>buildingMap</RolePermission>
+				<RolePermission>organizationChart</RolePermission>
+				<RolePermission>scheduleInfo</RolePermission>
+			</RolePermissions>
+			<RoleResponsibility>
+				<Conclude></Conclude>
+				<Maintain>(customerEmotion "find")</Maintain>
+			</RoleResponsibility>
+		</Role>
+		<Role>
+			<RoleName>customer</RoleName>
+			<RoleDescription>visit department</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>followGuide</RoleActivity>
+			</RoleActivities>
+			<RoleProtocol>
+				<RoleProtocol>guidProtocol</RoleProtocol>
+			</RoleProtocol>
+		</Role>
+	</Roles>
+	
+	<Activities>
+		<Activity>
+			<Name>checkScheduleByTask</Name>
+			<Pre-Condition>(customerRequest $customer "DestinationNotificationByTask" $task)</Pre-Condition>
+			<PostGoal>(checkScheduleByTask "guide" $task)</PostGoal>
+			<Effect>(responseRequest $busy $location $person $phone)</Effect>
+		</Activity>
+		<Activity>
+			<Name>checkScheduleByPerson</Name>
+			<Pre-Condition>(customerRequest $customer "DestinationNotificationByPerson" $person)</Pre-Condition>
+			<PostGoal>(checkScheduleByPerson "guide" $person)</PostGoal>
+			<Effect>(responseRequest $busy $location $person $phone)</Effect>
+		</Activity>
+		<Activity>
+			<Name>checkLocationPath</Name>
+			<Pre-Condition>(customerRequest $customer "NotifyRoute" $location)</Pre-Condition>
+			<PostGoal>(checkLocationPath $location)</PostGoal>
+			<Effect>(locationPath $locationPath)</Effect>
+		</Activity>
+		<Activity>
+			<Name>guideCustomer</Name>
+			<Pre-Condition>(customerReqeust $customer "GuestGuidence" $location)</Pre-Condition>
+			<PostGoal>(guideCustomer "guide" $location)</PostGoal>
+			<Effect>(guideLocation $x $y $z)</Effect>
+		</Activity>
+		<Activity>
+			<Name>followGuide</Name>
+			<Pre-Condition>(guideLocation $x $y $z)</Pre-Condition>
+			<PostGoal>(followGuide $actor $guide)</PostGoal>
+			<Effect>(myLocation $x $y $z)</Effect>
+		</Activity>
+	</Activities>
+	
+	<Protocols>
+		<Protocol>
+			<Name>queryRequest</Name>
+			<Pre-Condition>(facePerceived $usr $name)</Pre-Condition>
+			<From>Guide</From>
+			<To>Customer</To>
+			<Attribute>Query</Attribute>
+			<PostGoal>(queryRequest "guide")</PostGoal>
+			<Effect>(achieved (queryReqeust))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>informRequest</Name>
+			<Pre-Condition>(achieved (queryRequest))</Pre-Condition>
+			<From>Customer</From>
+			<To>Guide</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(informRequest "customer")</PostGoal>
+			<Effect>(customerRequest $customer $request $param)</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>responseRequestSchedule</Name>
+			<Pre-Condition>(responseSchedule $busy $location $person $phone) </Pre-Condition>
+			<From>Guide</From>
+			<To>Customer</To>
+			<Attribute>Response</Attribute>
+			<PostGoal>(responseRequestSchedule "guide" $busy $location $person $phone)</PostGoal>
+			<Effect>(achieved (responseRequestSchedule))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>requestGuide</Name>
+			<Pre-Condition>(achieved (responseRequestSchedule))</Pre-Condition>
+			<From>Customer</From>
+			<To>Guide</To>
+			<Attribute>Request</Attribute>
+			<PostGoal>(reqeustGuide "customer")</PostGoal>
+			<Effect>(customerRequest "Person001" "GuestGuidence" "로봇연구실")</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>completeGuide</Name>
+			<Pre-Condition>(achieved (guideCustomer))</Pre-Condition>
+			<From>Guide</From>
+			<To>Customer</To>
+			<Attribute>Inform</Attribute>
+			<PostGoal>(completeGuide "guide")</PostGoal>
+			<Effect>(achieved (completeGuide))</Effect>
+		</Protocol>
+	</Protocols>
+	
+	<Agents>
+		<Agent>
+			<Name>GuideAgent</Name>
+			<AgentURI>www.arbi.com/GuideAgent</AgentURI>
+			<AgentRoles>
+				<AgentRole>Guide</AgentRole>
+			</AgentRoles>
+		</Agent>
+		<Agent>
+			<Name>CustomerAgent</Name>
+			<AgentURI>www.arbi.com/CustomerAgent</AgentURI>
+			<AgentRoles>
+				<AgentRole>Customer</AgentRole>
+			</AgentRoles>
+		</Agent>
+	</Agents>
+	
+</Service>

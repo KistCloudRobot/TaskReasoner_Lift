@@ -1,0 +1,209 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{
+  static = false;}PARSER_BEGIN(UtilityFunctionParser)package kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.parser;
+
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.model.*;
+public class UtilityFunctionParser{  public static void main(String args []) throws ParseException  {    UtilityFunctionParser parser = new UtilityFunctionParser(System.in);    while (true)    {      try      {
+        FormulaExpression result = parser.parse();      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(UtilityFunctionParser)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >}TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
+}
+TOKEN :
+{
+  < VALUE : (< DIGIT >)+("."(< DIGIT >))* >
+}
+
+TOKEN :
+{
+  < IDENTIFIER :
+    < LETTER >
+    (
+      < LETTER >
+    | < SPECIAL_LETTER >
+    )* >
+| < #LETTER : ([ "a"-"z", "A"-"Z" ]) >
+| < #SPECIAL_LETTER : (["-",".",",", "_", ":", ";", "~", "!", "@","#","$","%","^","&","*","(",")","=","+", "/", "?"])>
+}
+
+FormulaExpression parse() :
+{
+  FormulaExpression formula;
+}
+{
+  formula = function()
+  {
+    return formula;
+  }
+}FormulaExpression function() :{
+  FormulaExpression left;
+  FormulaExpression right;
+  Token operatorToken;
+  OperatorExpression operatorExpression;
+}{  left = term()
+  (
+    operatorToken = expressionOperator() 
+    right = term()
+     {
+      operatorExpression = new OperatorExpression();
+      operatorExpression.setOperator(operatorToken.image);
+      operatorExpression.setRight(right);
+      operatorExpression.setLeft(left);
+      return operatorExpression;
+    }
+  )?
+  {
+    return left;
+  }}
+Token expressionOperator() :
+{
+ Token t;
+}
+{
+  (
+    t = < PLUS >
+  | t = < MINUS >
+  )
+  {
+    return t;
+  }
+}
+
+FormulaExpression term() :
+{
+  FormulaExpression left;
+  FormulaExpression right;
+  Token operatorToken;
+  OperatorExpression operatorExpression;
+}
+{
+  left = unary()
+  (
+	( operatorToken = < DIVIDE >
+	| operatorToken = < MULTIPLY > 	)    
+    //operatorToken = termOperator() 
+    right = term()
+  {
+      operatorExpression = new OperatorExpression();
+      operatorExpression.setOperator(operatorToken.image);
+      operatorExpression.setRight(right);
+      operatorExpression.setLeft(left);
+      return operatorExpression;
+    }
+  )?
+  {
+    return left;
+  }
+}
+
+Token termOperator() :
+{
+  Token t;
+}
+{
+    t = < MULTIPLY > 
+  | t = < DIVIDE >
+  {
+    return t;
+  }
+}
+
+FormulaExpression unary() :
+{
+  FormulaExpression left;
+  FormulaExpression right;
+  Token operatorToken;
+  OperatorExpression operatorExpression = null;
+}
+{
+  (
+  	< MINUS >
+  {
+    operatorExpression = new OperatorExpression();
+    operatorExpression.setOperator("-");
+    ValueExpression v = new ValueExpression();
+    v.setValue(0f);
+    operatorExpression.setLeft(v);
+  }
+  )? 
+  right = element()
+  {
+    if(operatorExpression!=null) {
+      operatorExpression.setRight(right);
+      return operatorExpression;
+	} else {
+	  return right;
+	}
+  }
+}
+
+FormulaExpression expression() :
+{
+  FormulaExpression left;
+  FormulaExpression right;
+  Token operatorToken;
+  OperatorExpression operatorExpression;
+}
+{
+  left = term()
+  (
+    operatorToken = expressionOperator() 
+    right = term()
+     {
+      operatorExpression = new OperatorExpression();
+      operatorExpression.setOperator(operatorToken.image);
+      operatorExpression.setRight(right);
+      operatorExpression.setLeft(left);
+      return operatorExpression;
+    }
+  )?
+  {
+    return left;
+  }
+}
+
+FormulaExpression element() :
+{
+  FormulaExpression f;
+  ValueExpression value;
+  VariableExpression var;
+  Token t;
+}
+{
+  (
+    t = < VALUE >
+    {
+ 		value = new ValueExpression();
+ 		value.setValue(Float.parseFloat(t.image));
+ 		return value;     
+    }
+  | t = < CONSTANT >
+    {
+ 		value = new ValueExpression();
+ 		value.setValue(Float.parseFloat(t.image));
+ 		return value;     
+    }
+  |  var = variable()
+    {
+      return var;
+    }
+  |
+    "(" f = expression() ")"
+    {
+      return f;
+    }
+  )
+}
+
+VariableExpression variable() :
+{
+  
+  Token t;
+  VariableExpression v = new VariableExpression();
+}
+{
+  
+  t = < IDENTIFIER >
+  {
+    v.setIdentifier(t.image);
+    return v;
+  }
+}

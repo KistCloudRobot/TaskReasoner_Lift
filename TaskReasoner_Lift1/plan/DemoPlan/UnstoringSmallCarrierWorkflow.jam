@@ -1,0 +1,137 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "UnstoringSmallCarrierWorkflow1"
+	PRECONDITION :
+		$serviceName == "UnstoringSmallCarrier";
+		$taskType == "MovingRackTransportation";
+	BODY :
+		PERFORM WaitGoalComplete("MovingRackTransportedRequestedFrom");
+		RETRIEVE MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		if ($startStation == "station22") {
+			PERFORM ThrowGoal("MoveToLocation");
+			PERFORM ThrowGoal("DoorOpenedRequestTo");
+			PERFORM ThrowGoal("RackAttached");
+			PERFORM ThrowGoal("DoorClosedRequestTo");
+			PERFORM ThrowGoal("MoveToLocation");
+			PERFORM ThrowGoal("RackSeparated");
+		} else if ($endStation == "station22") {
+			PERFORM ThrowGoal("MoveToLocation");
+			PERFORM ThrowGoal("RackAttached");
+			PERFORM ThrowGoal("MoveToLocation");
+			PERFORM ThrowGoal("DoorOpenedRequestTo");
+			PERFORM ThrowGoal("RackSeparated");
+			PERFORM ThrowGoal("DoorClosedRequestTo");
+		}
+		PERFORM ThrowGoal("MovingRackTransportedReportedTo");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMoveToLocation11"
+	PRECONDITION :
+		FACT MovingRackTransportedRequestedFrom($manager, $goalID, $goal);
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		FACT TaskReasoner($reasoner);
+		$goalName == "MoveToLocation";
+	BODY :
+		$reasoner.sendToTM("postGoal", "MoveToLocation", $startStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalRackAttached"
+	PRECONDITION :
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		FACT TaskReasoner($reasoner);
+		$goalName == "RackAttached";
+	BODY :
+		$reasoner.sendToTM("postGoal", "RackAttached", $object, $startStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMoveToLocation22"
+	PRECONDITION :
+		FACT RackAttached($object, $startStation);
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "MoveToLocation";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "MoveToLocation", $endStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 2;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalRackSeparated"
+	PRECONDITION :
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "RackSeparated";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "RackSeparated", $object, $endStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMovingRackTransportedReportedTo"
+	PRECONDITION :
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "MovingRackTransportedReportedTo";
+		FACT TaskReasoner($reasoner);
+		FACT MovingRackTransportedRequestedFrom($manager, $goalID, $goal);
+	BODY :
+		$reasoner.sendToTM("postGoal", "MovingRackTransportedReportedTo", $manager, $goalID, $goal);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalDoorOpenedRequestedTo"
+	PRECONDITION :
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "DoorOpenedRequestTo";
+		FACT TaskReasoner($reasoner);
+		FACT MovingRackTransportedRequestedFrom($manager, $goalID, $goal);
+	BODY :
+		$reasoner.sendToTM("postGoal", "DoorOpenedRequestTo", $manager);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalDoorClosedRequestedTo"
+	PRECONDITION :
+		FACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "DoorClosedRequestTo";
+		FACT TaskReasoner($reasoner);
+		FACT MovingRackTransportedRequestedFrom($manager, $goalID, $goal);
+	BODY :
+		$reasoner.sendToTM("postGoal", "DoorClosedRequestTo", $manager);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeUnstoringCarrierWorkflow1"
+	PRECONDITION :
+		$serviceName == "UnstoringSmallCarrier";
+		$taskType == "MovingRackTransportation";
+	BODY :
+		RETRACT MovingRackTransportedRequestedFrom($v1, $v2, $v3);
+		RETRACT MovingRackTransportedReportedTo($v1, $v2, $v3);
+		RETRACT MoveToLocation($location);
+		RETRACT MoveToLocation($location);
+		RETRACT RackAttached($o, $location);
+		RETRACT RackSeparated($o, $location);
+		RETRACT DoorClosedRequestTo($a, $b);
+		RETRACT DoorOpenedRequestTo($a, $b);
+		RETRACT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+	UTILITY : 1;
+}
+

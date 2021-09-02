@@ -1,0 +1,22 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+
+PLAN CONCLUDE ContextAsserted(){
+	ID : "ContextAsserted"
+	PRECONDITION: 
+		FACT PolicyHandler($handler);
+	BODY:
+		System.out.println("JAM start update Policy");
+
+//		for ( i = 0 ; i < $handler.getPolicyListSize() ; i++) {
+//			$name = $handler.getPolicyNameFromPolicyList(i);
+//			PERFORM EvaluatePolicyValue($name);
+//		}
+		
+		System.out.println("JAM complete update Policy");
+		
+	EFFECTS :
+		RETRACT ContextAsserted();
+	UTILITY: 9999;
+}

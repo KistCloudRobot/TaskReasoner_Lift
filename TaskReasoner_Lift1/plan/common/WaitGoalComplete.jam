@@ -1,0 +1,49 @@
+
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM WaitGoalComplete($goal) {
+	ID : "WaitGoalComplete"
+	PRECONDITION :
+		FACT GoalCompleted($goal, $goalGL);
+	BODY :
+		RETRACT GoalCompleted($goal, $goalGL);
+}
+
+
+PLAN PERFORM WaitGoalComplete($goal) {
+	ID : "WaitGoalCompletePalletTransportedRequestedFrom"
+	PRECONDITION :
+		$goal == "PalletTransportedRequestedFrom";
+		FACT GoalCompleted($goal, $goalGL);
+		FACT GLMessageManager($glManager);
+	BODY :
+		$goalID =  $glManager.retreiveGLExpression($goalGL, 1);
+		$requestedGoal =  $glManager.retreiveGLExpression($goalGL, 2);
+		$object = $glManager.retreiveGLExpression($requestedGoal, 0);
+		$startStation = $glManager.retreiveGLExpression($requestedGoal, 1);
+		$endStation = $glManager.retreiveGLExpression($requestedGoal, 2);
+		ASSERT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		RETRACT GoalCompleted($goal, $goalGL);
+		
+	UTILITY :2;
+}
+
+PLAN PERFORM WaitGoalComplete($goal) {
+	ID : "WaitGoalCompleteMovingTransportedRequestedFrom"
+	PRECONDITION :
+		$goal == "MovingTransportedRequestedFrom";
+		FACT GoalCompleted($goal, $goalGL);
+		FACT GLMessageManager($glManager);
+	BODY :
+		$goalID =  $glManager.retreiveGLExpression($goalGL, 1);
+		$requestedGoal =  $glManager.retreiveGLExpression($goalGL, 2);
+		$object = $glManager.retreiveGLExpression($requestedGoal, 0);
+		$startStation = $glManager.retreiveGLExpression($requestedGoal, 1);
+		$endStation = $glManager.retreiveGLExpression($requestedGoal, 2);
+		ASSERT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		RETRACT GoalCompleted($goal, $goalGL);
+		
+	UTILITY :2;
+}

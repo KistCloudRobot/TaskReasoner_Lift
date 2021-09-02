@@ -1,0 +1,76 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN PERFORM HandleMessage($type, $message) {
+	ID : "HandleMessageAboutServiceModel"
+	PRECONDITION : 
+		FACT ServiceModelGenerator($generator);
+		FACT LoggerManager($lm);
+		$type == "serviceModel";
+	BODY :
+		System.out.println("JAM start generate service model");	
+		$arg = $generator.generateServiceArgument($message);
+		$lm.action("serviceAppend", $arg);
+		
+	UTILITY : 1;
+}
+
+PLAN PERFORM HandleMessage($type, $message) {
+	ID : "HandleMessageAboutGoal"
+	PRECONDITION : 
+		FACT ServiceModelGenerator($generator);
+		FACT LoggerManager($lm);
+		$type == "goal";
+	BODY :
+		System.out.println("JAM start generate goal");	
+		$arg = $generator.generateGoalArgument($message);
+		$lm.action("goalAppend",$arg);
+	UTILITY : 1;
+}
+
+PLAN PERFORM HandleMessage($type, $message) {
+	ID : "HandleMessageAboutContextAssert"
+	PRECONDITION : 
+		FACT GLMessageManager($glMsg);
+		FACT TaskReasoner($reasoner);
+		FACT LoggerManager($lm);
+		$type == "context";
+	BODY :
+		$arg = $lm.generateContextArgument($message);
+		$lm.action("assertContext", $arg);
+		$reasoner.sendToLM($arg);
+		
+		$name = $glMsg.getContextName($message);
+		ASSERT HandlePolicy($name);
+		
+		// ASSERT ContextAsserted();
+	UTILITY : 1;
+}
+
+PLAN PERFORM HandleMessage($type, $message) {
+	ID : "HandleMessageAboutPolicyAppend"
+	PRECONDITION : 
+		FACT PolicyHandler($handler);
+		FACT LoggerManager($lm);
+		$type == "policy";
+	BODY :
+		System.out.println("JAM start generate policy");
+
+		$arg = $handler.generatePolicyAppendArgument($message);
+		$lm.action("policyAppend", $arg);
+		
+		System.out.println("JAM complete generate policy");	
+		
+	UTILITY : 1;
+}
+
+PLAN PERFORM HandleMessage($type, $message) {
+	ID : "HandleMessageFailed"
+	PRECONDITION : 
+	BODY :
+		System.out.println("HandleMessage is failed");	
+	UTILITY : -1;
+}
+
+

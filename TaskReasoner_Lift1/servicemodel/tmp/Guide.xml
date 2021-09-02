@@ -1,0 +1,136 @@
+<Service>
+	<ServiceAttribute>
+		<Name>guide</Name>
+		<PreCondition>(facePerceived $user $name)</PreCondition>
+		<PostCondition>(achieved (completeGuide))</PostCondition>
+		<PostGoal>queryRequest</PostGoal>
+	</ServiceAttribute>
+	
+	<ServiceOntology>
+		<Ontology>
+			<Name>guidePlan</Name>
+			<Attribute>Plan</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>guideKnowledge</Name>
+			<Attribute>Knowledge</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>guideContext</Name>
+			<Attribute>Context</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+	</ServiceOntology>
+	
+	<Roles>
+		<Role>
+			<RoleName>guide</RoleName>
+			<RoleDescription>guide customer</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkDestinationByLocation</RoleActivity>
+				<RoleActivity>guideCustomer</RoleActivity>
+				<RoleActivity>checkFollowCustomer</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>queryRequest</RoleProtocol>
+				<RoleProtocol>responseLocationInfo</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>Map</RolePermission>
+			</RolePermissions>
+			<RoleResponsibilities>
+				<Conclude></Conclude>
+				<Maintain>(customerEmotion "fine")</Maintain>
+			</RoleResponsibilities>
+		</Role>
+		<Role>
+			<RoleName>customer</RoleName>
+			<RoleDescription>visit somewhere</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>inFrontGuide</RoleActivity>
+			</RoleActivities>
+			
+		</Role>
+		<RoleProtocols>
+			<RoleProtocol>informRequest</RoleProtocol>
+		</RoleProtocols>
+	</Roles> 
+	
+	<Activities>
+		<Activity>
+			<Name>checkDestinationByLocation</Name>
+			<PreCondition>(customerRequest $customer "DestinationNotificationByLocation" $location)</PreCondition>
+			<PostGoal>(checkLocation $location)</PostGoal>
+			<Effect>(responseReqeust (locationInfo $info))</Effect>
+		</Activity>
+		<Activity>
+			<Name>inFrontGuide</Name>
+			<PreCondition>(guide Position $x $y $z)</PreCondition>
+			<PostGoal>(inFrontGuide  $x $y $z)</PostGoal>
+			<Effect>(facePerceived $user $name)</Effect>
+		</Activity>
+		<Activity>
+			<Name>guideCustomer</Name>
+			<PreCondition>(customerRequest $customer "GuestGuidence" $location)</PreCondition>
+			<PostGoal>(guideCustomer $location)</PostGoal>
+			<Effect>(guideLocation $x $y $z)</Effect>
+		</Activity>
+		<Activity>
+			<Name>followGuide</Name>
+			<PreCondition>(guideLocation $x $y $z)</PreCondition>
+			<PostGoal>(followGuide $actor $guide)</PostGoal>
+			<Effect>(myLocation $x $y $z)</Effect>
+		</Activity>
+	</Activities>
+	
+	<Protocols>
+		<Protocol>
+			<Name>queryRequest</Name>
+			<From>guide</From>
+			<To>customer</To>
+			<Attribute>query</Attribute>
+			<PreCondition>(facePerceived $user $name)</PreCondition>
+			<PostGoal>(queryRequest $from $to)</PostGoal>
+			<Effect>(achieved (queryRequest))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>informRequest</Name>
+			<From>customer</From>
+			<To>guide</To>
+			<Attribute>inform</Attribute>
+			<PreCondition>(achieved (queryRequest))</PreCondition>
+			<PostGoal>(informRequest $from $to)</PostGoal>
+			<Effect>(customerRequest $customer $request $parameter)</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>responseLocationInfo</Name>
+			<From>guide</From>
+			<To>customer</To>
+			<Attribute>response</Attribute>
+			<PreCondition>(responseRequest (locationInfo $info))</PreCondition>
+			<PostGoal>(responseLocationInfo $locationInfo)</PostGoal>
+			<Effect>(achieved (responseLocationInfo))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>requestGuide</Name>
+			<From>customer</From>
+			<To>guide</To>
+			<Attribute>request</Attribute>
+			<PreCondition>(achieved (responseLocationInfo))</PreCondition>
+			<PostGoal>(requestGuide $from $to)</PostGoal>
+			<Effect>customerRequest $customer "GuestGuidence" $location)</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>completeGuide</Name>
+			<PreCondition>(achieved (guideCustomer))</PreCondition>
+			<From>guide</From>
+			<To>customer</To>
+			<Attribute>inform</Attribute>
+			<PostGoal>(completeGuide $from $to)</PostGoal>
+			<Effect>(achieved (completeGuide))</Effect>
+		</Protocol>
+	</Protocols>
+
+</Service>

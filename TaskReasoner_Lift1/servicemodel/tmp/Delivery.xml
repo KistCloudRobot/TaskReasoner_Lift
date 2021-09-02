@@ -1,0 +1,104 @@
+<Service>
+	<ServiceAttribute>
+		<Name>Delivery</Name>
+		<PreCondition>(userRequest $user "Delivery" $object $where)</PreCondition>
+		<PostCondition>(achieved (completeDelivery))</PostCondition>
+		<PostGoal>queryObjectLocation</PostGoal>
+	</ServiceAttribute>
+	
+	<ServiceOntology>
+		<Ontology>
+			<Name>deliveryPlan</Name>
+			<Attribute>Plan</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>deliveryKnowledge</Name>
+			<Attribute>Knowledge</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+		<Ontology>
+			<Name>deliveryContext</Name>
+			<Attribute>Context</Attribute>
+			<URI>www.arbi.com/...</URI>
+		</Ontology>
+	</ServiceOntology>
+	
+	<Roles>
+		<Role>
+			<RoleName>deliver</RoleName>
+			<RoleDescription>deliver object somewhere</RoleDescription>
+			<RoleActivities>
+				<RoleActivity>checkObjectPosition</RoleActivity>
+				<RoleActivity>takeObject</RoleActivity>
+				<RoleActivity>deliverObjectToWhere</RoleActivity>
+			</RoleActivities>
+			<RoleProtocols>
+				<RoleProtocol>queryObjectLocation</RoleProtocol>
+			</RoleProtocols>
+			<RolePermissions>
+				<RolePermission>Map</RolePermission>
+			</RolePermissions>
+			<RoleResponsebilities>
+			</RoleResponsebilities>
+		</Role>
+		<Role>
+			<RoleName>user</RoleName>
+			<RoleDescription>request delivery to deliver</RoleDescription>
+			<RoleActivities></RoleActivities>
+			<RoleProtocols>
+				<RoleProtocols>responseWhere</RoleProtocols>
+			</RoleProtocols>
+		</Role>
+	</Roles>
+	
+	<Activities>
+		<Activity>
+			<Name>checkObjectPosition</Name>
+			<PreCondition>(objectLocation $location)</PreCondition>
+			<PostGoal>(checkObjectPosition $object $location)</PostGoal>
+			<Effect>(objectPosition $object $x $y $z)</Effect>
+		</Activity>
+		<Activity>
+			<Name>takeObject</Name>
+			<PreCondition>(objectPosition $object $x $y $z)</PreCondition>
+			<PostGoal>(takeObject $object $x $y $z)</PostGoal>
+			<Effect>(keepingObject $object)</Effect>
+		</Activity>
+		<Activity>
+			<Name>deliverObjectToWhere</Name>
+			<PreCondition>(keepingObject $object)</PreCondition>
+			<PostGoal>(delivery $user $object $x $y $z)</PostGoal>
+			<Effect>(objectLocation $x $y $z)</Effect>
+		</Activity>
+	</Activities>
+	
+	<Protocols>
+		<Protocol>
+			<Name>queryObjectLocation</Name>
+			<From>deliver</From>
+			<To>user</To>
+			<Attribute>query</Attribute>
+			<PreCondition>(userRequest $user "Delivery" $object $where)</PreCondition>
+			<PostGoal>(queryObjectLocation $from $to)</PostGoal>
+			<Effect>(achieved (queryObjectLocation))</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>informObjectLocation</Name>
+			<From>user</From>
+			<To>deliver</To>
+			<Attribute>inform</Attribute>
+			<PreCondition>(achieved (queryObjectLocation))</PreCondition>
+			<PostGoal>(responseObjectLocation $from $to)</PostGoal>
+			<Effect>(objectLocation $location)</Effect>
+		</Protocol>
+		<Protocol>
+			<Name>completeDelivery</Name>
+			<From>deliver</From>
+			<To>user</To>
+			<Attribute>inform</Attribute>
+			<PostGoal>(completeDelivery $from $to)</PostGoal>
+			<Effect>(achieved (completeDelivery))</Effect>
+		</Protocol>
+	</Protocols>
+</Service>

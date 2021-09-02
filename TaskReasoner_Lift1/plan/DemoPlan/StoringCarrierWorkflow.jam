@@ -1,0 +1,99 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+	PREFIX isro: <http://www.arbi.com//BuiltInPlan#>;		
+	
+PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
+	ID : "StoringCarrierWorkflow1"
+	PRECONDITION :
+		$serviceName == "StoringCarrier";
+		$taskType == "PalletTransportation";
+	BODY :
+		PERFORM WaitGoalComplete("PalletTransportedRequestedFrom");
+		PERFORM ThrowGoal("MoveToLocation");
+		PERFORM ThrowGoal("ObjectGrabbed");
+		PERFORM ThrowGoal("MoveToLocation");
+		PERFORM ThrowGoal("ObjectPlaced");
+		PERFORM ThrowGoal("PalletTransportedReportedTo");
+		PERFORM FinalizeService($serviceName, $taskType);
+		
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMoveToLocation1111"
+	PRECONDITION :
+		FACT PalletTransportedRequestedFrom($manager, $goalID, $goal);
+		FACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		FACT TaskReasoner($reasoner);
+		$goalName == "MoveToLocation";
+	BODY :
+		$reasoner.sendToTM("postGoal", "MoveToLocation", $startStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalObjectGrabbed"
+	PRECONDITION :
+		FACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		FACT TaskReasoner($reasoner);
+		$goalName == "ObjectGrabbed";
+	BODY :
+		$reasoner.sendToTM("postGoal", "ObjectGrabbed", $object, $startStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalMoveToLocation2222"
+	PRECONDITION :
+		FACT ObjectGrabbed($object, $startStation);
+		FACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "MoveToLocation";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "MoveToLocation", $endStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalObjectPlaced"
+	PRECONDITION :
+		FACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "ObjectPlaced";
+		FACT TaskReasoner($reasoner);
+	BODY :
+		$reasoner.sendToTM("postGoal", "ObjectPlaced", $object, $endStation);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM ThrowGoal($goalName) {
+	ID : "ThrowGoalPalletTransportedReportedTo"
+	PRECONDITION :
+		FACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		$goalName == "PalletTransportedReportedTo";
+		FACT TaskReasoner($reasoner);
+		FACT PalletTransportedRequestedFrom($manager, $goalID, $goal);
+	BODY :
+		$reasoner.sendToTM("postGoal", "PalletTransportedReportedTo", $manager, $goalID, $goal);
+		PERFORM WaitGoalComplete($goalName);
+	UTILITY : 1;
+}
+
+PLAN PERFORM FinalizeService($serviceName, $taskType){
+	ID : "FinalizeStoringCarrierWorkflow1"
+	PRECONDITION :
+		$serviceName == "StoringManager";
+		$taskType == "PalletTransportation";
+	BODY :
+		RETRACT PalletTransportedRequestedFrom($v1, $v2, $v3);
+		RETRACT PalletTransportedReportedTo($v1, $v2, $v3);
+		RETRACT MoveToLocation($location);
+		RETRACT MoveToLocation($location);
+		RETRACT ObjectGrabbed($o, $location);
+		RETRACT ObjectPlaced($o, $location);
+		RETRACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+	UTILITY : 1;
+}
+

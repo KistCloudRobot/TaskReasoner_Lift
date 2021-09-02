@@ -1,0 +1,5 @@
+<Agent-Property>
+	
+	<OS>WINDOW</OS><ServerURL>tcp://localhost:61616</ServerURL>
+	<AgentName>www.arbi.com/taskReasoner</AgentName><BrokerType>ZeroMQ</BrokerType>
+	<TaskManagerName>www.arbi.com/taskManager</TaskManagerName></Agent-Property>

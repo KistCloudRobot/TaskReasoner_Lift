@@ -36,10 +36,10 @@ import uos.ai.jam.JAM;
 
 public class TaskReasoner_Lift1 extends ArbiAgent {
 	
-	private static String brokerURI = "tcp://172.16.165.135:61116";
-	private static String myURI = "www.arbi.com/Lift1/TaskReasoner";
+	private static String brokerURI = "tcp://172.16.165.135:61115";
+	private static String myURI = "www.arbi.com/Lift2/TaskReasoner";
 	private static int brokerType = 2;
-	private static String TM_URI = "www.arbi.com/Lift1/TaskManager";
+	private static String TM_URI = "www.arbi.com/Lift2/TaskManager";
 
 	
 	private static final String	agentURIPrefix			= "agent://";
@@ -147,8 +147,8 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 		//ds.subscribe(subscriveGoal);
 		// (goal (goalName ))
 				
-		//String subscriveContext = "(rule (fact (context $context)) --> (notify (context $context)))";
-		//System.out.println(ds.subscribe(subscriveContext));
+		String subscriveContext = "(rule (fact (hello $context)) --> (notify (hello $context)))";
+		System.out.println(ds.subscribe(subscriveContext));
 		
 		
 		
@@ -212,7 +212,9 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 					glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
 				} else if (gl.getName().equals("goalComplete")) {
 					glMessageManager.assertContext(gl.getExpression(0).asGeneralizedList());
-					glMessageManager.assertFact("GoalCompleted",gl.getExpression(0).asGeneralizedList().getName());
+					glMessageManager.assertFact("GoalCompleted",gl.getExpression(0).asGeneralizedList().getName(), gl.getExpression(0).asGeneralizedList().toString());
+				} else if(gl.getExpression(0).isGeneralizedList()) {
+					System.out.println(gl.toString());
 				} else {
 					glMessageManager.assertFact("RecievedMessage", sender, data);
 				}
@@ -228,6 +230,12 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 		
 	public boolean sendToTM(String type, String name, Object... args) {
 		//System.out.println("send to tm : " + type + ", " +name);
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.send(agentURIPrefix + TM_URI, glMessageManager.makeGLMessage(type, name, args));
 		
 		return true;

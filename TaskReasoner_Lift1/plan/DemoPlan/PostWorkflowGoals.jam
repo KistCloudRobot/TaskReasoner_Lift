@@ -1,8 +1,14 @@
 
-PLAN PERFORM PostWorkflowGoals() {
+PLAN CONCLUDE PostWorkflowGoals() {
 	ID : "PostWorkflowGoals"
 	BODY :
-		POST PERFORM ThrowWorkflow("StoringCarrier", "PalletTransportation");
-		POST PERFORM ThrowWorkflow("UnstoringSmallCarrier", "MovingRackTransportation");
-	UTILITY : 10;
+		System.out.println("==post start==");
+				
+		POST ACHIEVE ThrowWorkflow("StoringCarrier", "PalletTransportation");
+		//POST ACHIEVE ThrowWorkflow("UnstoringSmallCarrier", "MovingRackTransportation");
+		
+		
+		RETRACT PostWorkflowGoals();
+		System.out.println("==post complete==");
+	UTILITY : 1000;
 }

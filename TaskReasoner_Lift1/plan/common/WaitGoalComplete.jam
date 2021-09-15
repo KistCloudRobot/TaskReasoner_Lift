@@ -9,27 +9,53 @@ PLAN PERFORM WaitGoalComplete($goal) {
 		FACT GoalCompleted($goal, $goalGL);
 	BODY :
 		RETRACT GoalCompleted($goal, $goalGL);
+	UTILITY :10;
 }
 
 
 PLAN PERFORM WaitGoalComplete($goal) {
 	ID : "WaitGoalCompletePalletTransportedRequestedFrom"
 	PRECONDITION :
+		FACT GoalCompleted($goal, $reportGL);
 		$goal == "PalletTransportedRequestedFrom";
-		FACT GoalCompleted($goal, $goalGL);
 		FACT GLMessageManager($glManager);
 	BODY :
-		$goalID =  $glManager.retreiveGLExpression($goalGL, 1);
-		$requestedGoal =  $glManager.retreiveGLExpression($goalGL, 2);
-		$object = $glManager.retreiveGLExpression($requestedGoal, 0);
-		$startStation = $glManager.retreiveGLExpression($requestedGoal, 1);
-		$endStation = $glManager.retreiveGLExpression($requestedGoal, 2);
+		System.out.println("start WaitGoalComplete : WaitGoalCompletePalletTransportedRequestedFrom");
+		
+		System.out.println($reportGL);
+		//$reportGL = $glManager.escapeGL($reportGL);
+		
+		//$reportGL = $glManager.unescapeGL($reportGL);
+			
+		System.out.println($reportGL);
+		$goalGL = $glManager.retrieveGLExpression($reportGL, 2);
+			
+		System.out.println($goalGL);
+		$goalGL = $glManager.unescapeGL($goalGL);
+		System.out.println($goalGL);
+		$goalMetadata =  $glManager.retrieveGLExpression($goalGL, 0);
+		
+		$goalID =  $glManager.retrieveGLExpression($goalMetadata, 0);
+		
+		System.out.println($goalID);
+		$argumentGL =  $glManager.retrieveGLExpression($goalGL, 2);
+	
+		$object = $glManager.retrieveGLExpression($argumentGL, 0);
+		System.out.println($object);
+		$startStation = $glManager.retrieveGLExpression($argumentGL, 1);
+		System.out.println($startStation);
+		$endStation = $glManager.retrieveGLExpression($argumentGL, 2);
+		System.out.println($endStation);
+		
 		ASSERT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
+		
+		System.out.println("end WaitGoalComplete");
+		
 		RETRACT GoalCompleted($goal, $goalGL);
 		
-	UTILITY :2;
+	UTILITY :20;
 }
-
+/*
 PLAN PERFORM WaitGoalComplete($goal) {
 	ID : "WaitGoalCompleteMovingTransportedRequestedFrom"
 	PRECONDITION :
@@ -37,13 +63,19 @@ PLAN PERFORM WaitGoalComplete($goal) {
 		FACT GoalCompleted($goal, $goalGL);
 		FACT GLMessageManager($glManager);
 	BODY :
-		$goalID =  $glManager.retreiveGLExpression($goalGL, 1);
-		$requestedGoal =  $glManager.retreiveGLExpression($goalGL, 2);
-		$object = $glManager.retreiveGLExpression($requestedGoal, 0);
-		$startStation = $glManager.retreiveGLExpression($requestedGoal, 1);
-		$endStation = $glManager.retreiveGLExpression($requestedGoal, 2);
+	
+		System.out.println("start WaitGoalComplete");
+		$goalGL = $glManager.unescapeGL($goalGL);
+		$goalID =  $glManager.retrieveGLExpression($goalGL, 1);
+		$requestedGoal =  $glManager.retrieveGLExpression($goalGL, 2);
+		$object = $glManager.retrieveGLExpression($requestedGoal, 0);
+		$startStation = $glManager.retrieveGLExpression($requestedGoal, 1);
+		$endStation = $glManager.retrieveGLExpression($requestedGoal, 2);
 		ASSERT MovingRackTransportationRequested($goalID, $object, $startStation, $endStation);
+		System.out.println("end WaitGoalComplete");
+		
 		RETRACT GoalCompleted($goal, $goalGL);
 		
-	UTILITY :2;
+	UTILITY :10;
 }
+*/

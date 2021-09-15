@@ -8,15 +8,20 @@ PLAN ACHIEVE ThrowWorkflow($serviceName, $taskType) {
 		$serviceName == "StoringCarrier";
 		$taskType == "PalletTransportation";
 	BODY :
+	
+		System.out.println("PalletTransportedRequestedFrom start");
 		PERFORM WaitGoalComplete("PalletTransportedRequestedFrom");
+		System.out.println("PalletTransportedRequestedFrom complete");
+		
 		PERFORM ThrowGoal("MoveToLocation");
 		PERFORM ThrowGoal("ObjectGrabbed");
 		PERFORM ThrowGoal("MoveToLocation");
 		PERFORM ThrowGoal("ObjectPlaced");
 		PERFORM ThrowGoal("PalletTransportedReportedTo");
+		
 		PERFORM FinalizeService($serviceName, $taskType);
 		
-	UTILITY : 1;
+	UTILITY : 1000;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -27,9 +32,10 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT TaskReasoner($reasoner);
 		$goalName == "MoveToLocation";
 	BODY :
-		$reasoner.sendToTM("postGoal", "MoveToLocation", $startStation);
+		System.out.println("start ThrowGoal MoveToLocation");
+		$reasoner.sendToTM("PostGoal", "MoveToLocation", $startStation);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 PLAN PERFORM ThrowGoal($goalName) {
 	ID : "ThrowGoalObjectGrabbed"
@@ -38,9 +44,9 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT TaskReasoner($reasoner);
 		$goalName == "ObjectGrabbed";
 	BODY :
-		$reasoner.sendToTM("postGoal", "ObjectGrabbed", $object, $startStation);
+		$reasoner.sendToTM("PostGoal", "ObjectGrabbed", $object, $startStation);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -51,9 +57,9 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "MoveToLocation";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "MoveToLocation", $endStation);
+		$reasoner.sendToTM("PostGoal", "MoveToLocation", $endStation);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -63,9 +69,9 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "ObjectPlaced";
 		FACT TaskReasoner($reasoner);
 	BODY :
-		$reasoner.sendToTM("postGoal", "ObjectPlaced", $object, $endStation);
+		$reasoner.sendToTM("PostGoal", "ObjectPlaced", $object, $endStation);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {
@@ -76,9 +82,9 @@ PLAN PERFORM ThrowGoal($goalName) {
 		FACT TaskReasoner($reasoner);
 		FACT PalletTransportedRequestedFrom($manager, $goalID, $goal);
 	BODY :
-		$reasoner.sendToTM("postGoal", "PalletTransportedReportedTo", $manager, $goalID, $goal);
+		$reasoner.sendToTM("PostGoal", "PalletTransportedReportedTo", $manager, $goalID, $goal);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 
 PLAN PERFORM FinalizeService($serviceName, $taskType){
@@ -94,6 +100,6 @@ PLAN PERFORM FinalizeService($serviceName, $taskType){
 		RETRACT ObjectGrabbed($o, $location);
 		RETRACT ObjectPlaced($o, $location);
 		RETRACT PalletTransportationRequested($goalID, $object, $startStation, $endStation);
-	UTILITY : 1;
+	UTILITY : 10;
 }
 

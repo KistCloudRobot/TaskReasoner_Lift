@@ -24,6 +24,12 @@ public class GLMessageManager {
 	}
 	
 	public void assertToLTM(String gl) {
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ds.assertFact(gl);
 	}
 
@@ -45,8 +51,12 @@ public class GLMessageManager {
 		String result = "";
 		try {
 			GeneralizedList gl = GLFactory.newGLFromGLString(input);
-			result = gl.getExpression(i).toString();
-
+			
+			if(gl.getExpression(i).isValue()) {
+				result = gl.getExpression(i).asValue().stringValue();
+			} else if (gl.getExpression(i).isGeneralizedList()) {
+				result = gl.getExpression(i).asGeneralizedList().toString();
+			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,7 +134,7 @@ public class GLMessageManager {
 	*/
 	public String makeGLMessage(String type, String name, Object... args) {
 		StringBuilder msgBuilder = new StringBuilder();
-		if (type.equals("postGoal")) {
+		if (type.equals("PostGoal")) {
 			msgBuilder.append("(PostGoal (" + name);
 
 		} else if(type.equals("policy")) {
@@ -192,6 +202,19 @@ public class GLMessageManager {
 		
 		return null;
 		
+	}
+
+	public String escapeGL(String gl) {
+		System.out.println("start escape : " + gl);
+		String result = GLFactory.escape(gl);
+		System.out.println(result);
+		return result;
+	}
+	public String unescapeGL(String gl) {
+		System.out.println("start unescape : " + gl);
+		String result = GLFactory.unescape(gl);
+		System.out.println(result);
+		return result;
 	}
 }
 

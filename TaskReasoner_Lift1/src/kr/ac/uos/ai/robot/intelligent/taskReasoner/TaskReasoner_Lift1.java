@@ -158,7 +158,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect(brokerURI, dsURIPrefix+TASKREASONER_ADDRESS, 2);
+		ds.connect("tcp://" + ENV_JMS_BROKER, dsURIPrefix+TASKREASONER_ADDRESS, 2);
 		//goal and context is wrapped
 		//String subscriveGoal = "(rule (fact (goal $goal $precondition $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";
 		//ds.subscribe(subscriveGoal);

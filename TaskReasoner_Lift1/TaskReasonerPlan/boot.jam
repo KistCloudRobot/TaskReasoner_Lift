@@ -21,7 +21,7 @@ PLAN PERFORM boot() {
 		System.out.println("booting process start");
 		
 		RETRIEVE TaskReasoner($taskReasoner);
-		$taskReasoner.loadPlan("TaskReasonerPlan/planList.jam");
+		$taskReasoner.loadPlan("./TaskReasonerPlan/planList.jam");
 		
 		PERFORM loadPlanPackage();
 		

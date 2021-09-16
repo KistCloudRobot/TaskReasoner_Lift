@@ -1,0 +1,13 @@
+PREFIXES:
+	PREFIX arbi: <http://www.arbi.com//ontologies#>;
+
+PLAN PERFORM loadPlanPackage(){
+	ID : "loadPlanPackage"
+	PRECONDITION:
+		FACT TaskReasoner($taskReasoner);
+	BODY:
+		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/common");
+		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/Demoplan");
+		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/BuiltInPolicy");
+		
+}

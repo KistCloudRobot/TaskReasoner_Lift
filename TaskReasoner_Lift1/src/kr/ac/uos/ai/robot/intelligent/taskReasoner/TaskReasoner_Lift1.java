@@ -67,7 +67,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 
 		initAddress();
 		//config();
-		interpreter = JAM.parse(new String[] {"plan/boot.jam"} );
+		interpreter = JAM.parse(new String[] {"TaskReasonerPlan/boot.jam"} );
 		
 		ds = new TaskReasonerDataSource(this);
 		

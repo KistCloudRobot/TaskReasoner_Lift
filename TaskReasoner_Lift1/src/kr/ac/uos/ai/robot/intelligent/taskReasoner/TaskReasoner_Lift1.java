@@ -2,6 +2,8 @@ package kr.ac.uos.ai.robot.intelligent.taskReasoner;
 
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -92,13 +94,18 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	
 
 	public void initAddress() {
-		ENV_JMS_BROKER = System.getenv("JMS_BROKER");
-		ENV_AGENT_NAME = System.getenv("AGENT");
-		ENV_ROBOT_NAME = System.getenv("ROBOT");
-		
-		TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
-		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
-		
+		try {
+			String ip = InetAddress.getLocalHost().getHostAddress();
+			ENV_JMS_BROKER = ip + ":61316";
+			ENV_AGENT_NAME = System.getenv("AGENT");
+			ENV_ROBOT_NAME = System.getenv("ROBOT");
+
+			TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
+			TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	private void config() {
 

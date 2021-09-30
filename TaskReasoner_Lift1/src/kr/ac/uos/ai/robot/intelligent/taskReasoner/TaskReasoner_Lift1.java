@@ -43,7 +43,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	public static String ENV_ROBOT_NAME;
 	public static final String ARBI_PREFIX = "www.arbi.com/";
 	
-	private static String brokerURI = "tcp://172.16.165.135:61115";
+	//private static String brokerURI = "tcp://172.16.165.135:61115";
 	private static int brokerType = 2;
 	private static String TASKREASONER_ADDRESS;
 	private static String TASKMANAGER_ADDRESS;
@@ -84,7 +84,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 		
 		ArbiAgentExecutor.execute("tcp://"+ENV_JMS_BROKER,  agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
 
-		loggerManager = LoggerManager.getInstance();
+		//loggerManager = LoggerManager.getInstance();
 		
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
 		
@@ -94,19 +94,14 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	
 
 	public void initAddress() {
-		try {
-			String ip = InetAddress.getLocalHost().getHostAddress();
-			ENV_JMS_BROKER = ip + ":61316";
-			ENV_AGENT_NAME = System.getenv("AGENT");
-			ENV_ROBOT_NAME = System.getenv("ROBOT");
+		ENV_JMS_BROKER = System.getenv("JMS_BROKER");
+		ENV_AGENT_NAME = System.getenv("AGENT");
+		ENV_ROBOT_NAME = System.getenv("ROBOT");
 
-			TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
-			TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
+		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
 	}
+	/*
 	private void config() {
 
 		try {
@@ -142,7 +137,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 			e.printStackTrace();
 		}
 	}
-	
+	*/
 	private void init() {
 		
 		glMessageManager.assertFact("GLMessageManager", glMessageManager);

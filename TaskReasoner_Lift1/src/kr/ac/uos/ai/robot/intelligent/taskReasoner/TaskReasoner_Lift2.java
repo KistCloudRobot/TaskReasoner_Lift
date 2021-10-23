@@ -36,7 +36,7 @@ import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.UtilityCalculator;
 import uos.ai.jam.Interpreter;
 import uos.ai.jam.JAM;
 
-public class TaskReasoner_Lift1 extends ArbiAgent {
+public class TaskReasoner_Lift2 extends ArbiAgent {
 
 	public static String ENV_JMS_BROKER;
 	public static String ENV_AGENT_NAME;
@@ -64,7 +64,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	private UtilityCalculator							utilityCalculator;
 	
 
-	public TaskReasoner_Lift1() {
+	public TaskReasoner_Lift2() {
 
 
 		initAddress();
@@ -82,9 +82,9 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 		//server = new Server(this);
 		utilityCalculator = new UtilityCalculator(interpreter);
 		
-		ArbiAgentExecutor.execute("tcp://"+ENV_JMS_BROKER,  agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
+		ArbiAgentExecutor.execute(ENV_JMS_BROKER,  agentURIPrefix + TASKREASONER_ADDRESS, this, brokerType);
 
-		//loggerManager = LoggerManager.getInstance();
+		loggerManager = LoggerManager.getInstance();
 		
 		taskReasonerAction = new TaskReasonerAction(this, interpreter, loggerManager);
 		
@@ -94,10 +94,13 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	
 
 	public void initAddress() {
-		ENV_JMS_BROKER = System.getenv("JMS_BROKER");
-		ENV_AGENT_NAME = System.getenv("AGENT");
-		ENV_ROBOT_NAME = System.getenv("ROBOT");
-
+		//ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER");
+		//ENV_AGENT_NAME = System.getenv("AGENT");
+		//ENV_ROBOT_NAME = System.getenv("ROBOT");
+		ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER") + ":61115";
+		ENV_AGENT_NAME = "Lift2";
+		ENV_ROBOT_NAME = "AMR_LIFT2";
+		
 		TASKMANAGER_ADDRESS = agentURIPrefix + ARBI_PREFIX + ENV_AGENT_NAME + "/TaskManager";
 		TASKREASONER_ADDRESS = ARBI_PREFIX + ENV_AGENT_NAME + "/TaskReasoner";
 	}
@@ -160,7 +163,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	@Override
 	public void onStart() {
 		System.out.println("====onStart====");
-		ds.connect("tcp://" + ENV_JMS_BROKER, dsURIPrefix+TASKREASONER_ADDRESS, 2);
+		ds.connect(ENV_JMS_BROKER, dsURIPrefix+TASKREASONER_ADDRESS, 2);
 		//goal and context is wrapped
 		//String subscriveGoal = "(rule (fact (goal $goal $precondition $postcondition)) --> (notify (goal $goal $precondition $postcondition)))";
 		//ds.subscribe(subscriveGoal);
@@ -208,7 +211,7 @@ public class TaskReasoner_Lift1 extends ArbiAgent {
 	}
 	
 	public static void main(String[] args) {
-		ArbiAgent agent = new TaskReasoner_Lift1();
+		ArbiAgent agent = new TaskReasoner_Lift2();
 	}
 	
 	public boolean dequeueMessage() {

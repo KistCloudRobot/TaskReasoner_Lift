@@ -1,15 +1,15 @@
 package kr.ac.uos.ai.robot.intelligent.taskReasoner.action;
 
 import kr.ac.uos.ai.arbi.agent.logger.ActionBody;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.GoalPostArgument;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.message.GLMessageManager;
 
 public class GoalPostAction implements ActionBody {
 
-	private TaskReasoner_Lift1 reasoner;
+	private TaskReasoner_Lift2 reasoner;
 	
-	public GoalPostAction(TaskReasoner_Lift1	reasoner) {
+	public GoalPostAction(TaskReasoner_Lift2	reasoner) {
 		this.reasoner = reasoner;
 	}
 	

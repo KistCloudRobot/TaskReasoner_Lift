@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.model.FormulaExpression;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.parser.ParseException;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.utility.parser.UtilityFunctionParser;

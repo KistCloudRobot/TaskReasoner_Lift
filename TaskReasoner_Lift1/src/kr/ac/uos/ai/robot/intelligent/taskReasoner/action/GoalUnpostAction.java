@@ -1,14 +1,14 @@
 package kr.ac.uos.ai.robot.intelligent.taskReasoner.action;
 
 import kr.ac.uos.ai.arbi.agent.logger.ActionBody;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.GoalPostArgument;
 
 public class GoalUnpostAction implements ActionBody{
 
-	private TaskReasoner_Lift1 reasoner;
+	private TaskReasoner_Lift2 reasoner;
 	
-	public GoalUnpostAction(TaskReasoner_Lift1 resoner) {
+	public GoalUnpostAction(TaskReasoner_Lift2 resoner) {
 		this.reasoner = resoner;
 		
 		// TODO Auto-generated constructor stub

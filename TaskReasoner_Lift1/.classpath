@@ -7,7 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="json-simple-1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Jam(0.7.1)"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ARBIFramework-1.2d"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Jam(0.7.1)"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

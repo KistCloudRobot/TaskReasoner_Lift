@@ -8,19 +8,19 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 
 public class Server implements Runnable{
 	
 	private ServerSocket serverSocket;
 	private Socket socket;
 	private int port_number = 9090; 
-	private TaskReasoner_Lift1 reasoner;
+	private TaskReasoner_Lift2 reasoner;
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	
 	
-	public Server(TaskReasoner_Lift1 reasoner) {
+	public Server(TaskReasoner_Lift2 reasoner) {
 		this.reasoner = reasoner;
 	}
 	

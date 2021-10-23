@@ -7,7 +7,7 @@ import java.util.List;
 import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.PolicyAppendArgument;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.PolicyUpdateArgument;
 import uos.ai.jam.Interpreter;
@@ -19,7 +19,7 @@ import uos.ai.jam.expression.Value;
 import uos.ai.jam.expression.Variable;
 
 public class PolicyHandler {
-	private TaskReasoner_Lift1 taskReaosner;
+	private TaskReasoner_Lift2 taskReaosner;
 	private Interpreter interpreter;
 	
 	private ArrayList<String> 	policyList;
@@ -33,7 +33,7 @@ public class PolicyHandler {
 	private HashMap<String, Float>  lmPolicyMap;
 	
 
-	public PolicyHandler(TaskReasoner_Lift1 taskReasoner, Interpreter interpreter) {
+	public PolicyHandler(TaskReasoner_Lift2 taskReasoner, Interpreter interpreter) {
 		this.taskReaosner = taskReasoner;
 		this.interpreter = interpreter;
 		lmPolicyMap = new HashMap<String, Float>();

@@ -7,7 +7,7 @@ import kr.ac.uos.ai.arbi.agent.logger.LoggerManager;
 import kr.ac.uos.ai.arbi.model.GLFactory;
 import kr.ac.uos.ai.arbi.model.GeneralizedList;
 import kr.ac.uos.ai.arbi.model.parser.ParseException;
-import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift1;
+import kr.ac.uos.ai.robot.intelligent.taskReasoner.TaskReasoner_Lift2;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.ContextArgument;
 import kr.ac.uos.ai.robot.intelligent.taskReasoner.action.argument.GoalPostArgument;
 import uos.ai.jam.Interpreter;
@@ -24,11 +24,11 @@ public class TaskReasonerAction {
 	private AgentAction GoalPostAction;
 	private AgentAction GoalUnpostAction;
 	
-	private TaskReasoner_Lift1 taskReasoner;
+	private TaskReasoner_Lift2 taskReasoner;
 	private Interpreter interpreter;
 	private LoggerManager loggerManager;
 
-	public TaskReasonerAction(TaskReasoner_Lift1 reasoner, Interpreter interpreter, LoggerManager loggerManager) {
+	public TaskReasonerAction(TaskReasoner_Lift2 reasoner, Interpreter interpreter, LoggerManager loggerManager) {
 		this.taskReasoner = reasoner;
 		this.interpreter = interpreter;
 		this.loggerManager = loggerManager;

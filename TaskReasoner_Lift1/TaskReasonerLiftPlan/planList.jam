@@ -7,7 +7,7 @@ PLAN PERFORM loadPlanPackage(){
 		FACT TaskReasoner($taskReasoner);
 	BODY:
 		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/common");
-		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/Demoplan");
+		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/DemoPlan");
 		$taskReasoner.loadPlanPackage("./TaskReasonerLiftPlan/BuiltInPolicy");
 		
 }

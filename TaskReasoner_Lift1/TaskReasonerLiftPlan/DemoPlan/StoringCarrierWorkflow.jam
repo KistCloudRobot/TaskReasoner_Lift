@@ -57,9 +57,11 @@ PLAN PERFORM ThrowGoal($goalName) {
 		$goalName == "MoveToLocation";
 		FACT TaskReasoner($reasoner);
 	BODY :
+		$reasoner.sleep(3000);
 		$reasoner.sendToTM("PostGoal", "MoveToLocation", $endStation);
 		PERFORM WaitGoalComplete($goalName);
-	UTILITY : 10;
+		
+	UTILITY : 100;
 }
 
 PLAN PERFORM ThrowGoal($goalName) {

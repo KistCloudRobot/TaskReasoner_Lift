@@ -91,13 +91,21 @@ public class TaskReasoner_Lift2 extends ArbiAgent {
 		init();
 	}
 	
+	public void sleep(int count) {
+		try {
+			Thread.sleep(count);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
-
+	
 	public void initAddress() {
 		//ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER");
 		//ENV_AGENT_NAME = System.getenv("AGENT");
 		//ENV_ROBOT_NAME = System.getenv("ROBOT");
-		ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER") + ":61115";
+		ENV_JMS_BROKER = "tcp://172.16.165.204" + ":61115";
 		ENV_AGENT_NAME = "Lift2";
 		ENV_ROBOT_NAME = "AMR_LIFT2";
 		
@@ -251,7 +259,7 @@ public class TaskReasoner_Lift2 extends ArbiAgent {
 	}
 		
 	public boolean sendToTM(String type, String name, Object... args) {
-		//System.out.println("send to tm : " + type + ", " +name);
+		System.out.println("send to tm : " + type + ", " +name);
 		try {
 			Thread.sleep(50);
 		} catch (InterruptedException e) {

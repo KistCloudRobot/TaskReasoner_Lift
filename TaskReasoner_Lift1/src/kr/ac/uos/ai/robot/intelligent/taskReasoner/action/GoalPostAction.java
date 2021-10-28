@@ -16,7 +16,7 @@ public class GoalPostAction implements ActionBody {
 	@Override
 	public Object execute(Object o) {
 		GoalPostArgument argument = (GoalPostArgument)o;
-		reasoner.sendToTM("postGoal", argument.getGoalName(), argument.getArguments());
+		reasoner.sendToTM("postGoal", "(" + argument.getGoalName() +  argument.getArguments() +")");
 		
 		// TODO Auto-generated method stub
 		return null;

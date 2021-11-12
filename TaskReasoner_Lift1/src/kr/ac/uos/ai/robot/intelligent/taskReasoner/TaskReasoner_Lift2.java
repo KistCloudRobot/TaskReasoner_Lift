@@ -105,7 +105,7 @@ public class TaskReasoner_Lift2 extends ArbiAgent {
 		//ENV_JMS_BROKER = "tcp://"+ System.getenv("JMS_BROKER");
 		//ENV_AGENT_NAME = System.getenv("AGENT");
 		//ENV_ROBOT_NAME = System.getenv("ROBOT");
-		ENV_JMS_BROKER = "tcp://127.0.0.1" + ":61115";
+		ENV_JMS_BROKER = "tcp://172.16.165.171" + ":61115";
 		ENV_AGENT_NAME = "Lift2";
 		ENV_ROBOT_NAME = "AMR_LIFT2";
 		

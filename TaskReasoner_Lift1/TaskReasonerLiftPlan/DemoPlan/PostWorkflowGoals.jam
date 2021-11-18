@@ -4,11 +4,11 @@ PLAN CONCLUDE PostWorkflowGoals() {
 	BODY :
 		System.out.println("==post start==");
 				
-		POST ACHIEVE ThrowWorkflow("StoringCarrier", "PalletTransportation");
+		POST PERFORM ThrowWorkflow();
 		//POST ACHIEVE ThrowWorkflow("UnstoringSmallCarrier", "MovingRackTransportation");
 		
 		
 		RETRACT PostWorkflowGoals();
 		System.out.println("==post complete==");
-	UTILITY : 1000;
+	UTILITY : 9999;
 }

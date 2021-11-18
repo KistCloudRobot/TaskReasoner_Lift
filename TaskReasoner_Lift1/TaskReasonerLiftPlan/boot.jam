@@ -29,7 +29,7 @@ PLAN PERFORM boot() {
 		
 		
 		System.out.println("boot success");
-	UTILITY : 100;
+	UTILITY : 10000;
 }
 /*
 
